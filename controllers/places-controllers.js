@@ -2,9 +2,14 @@
 // import { v4 as uuidv4 } from 'uuid';
 const { v4: uuidv4 } = require('uuid');
 
+// using validator to prevent user from entering place with missing info
+const { validationResult } = require("express-validator")
+
 // import http-error class by requiring it from models folder
 const HttpError = require("../models/http-error")
 
+// import function for geocoding
+const getCoordsForAddress = require("../utilities/location")
 
 // will be replaced with database access
 let DUMMY_PLACES = [
@@ -98,11 +103,43 @@ const getPlacesByUserId = (req, res, next) => {
     res.json({ places })
 }
 
-const createPlace = (req, res, next) => {
+
+// changing to async function in order to use getCoordsForAddress
+// so we can use await and work with promises
+// will replace throw with next
+const createPlace = async (req, res, next) => {
+    // in the middleware functions that are triggered by the routes that 
+    // have validation--calling validationResult will check
+    // if any validation errors are detected
+    const errors = validationResult(req);
+
+    // the validationResult has a method .isEmpty, we'll thow an error
+    if (!errors.isEmpty()) {
+        //the errors object has more data
+        console.log(errors)
+        return next(
+            new HttpError("Invalid inputs passed, please check your data.", 422)
+        )
+    }
+
     // expect data in POST request, to get data we can use the bodyParser package
-    const { title, description, coordinates, address, creator } = req.body;
+    const { title, description, address, creator } = req.body;
+
     // using the object destructuring above is a shortcut of this:
     // const = title = req.body.title for each property
+
+    // convert the address to coordinates by passing in the address 
+    // pass in await since this returns a promise
+
+    // 
+    let coordinates;
+    // this WILL throw an error and crash if it is not wrapped in try/catch
+    try {
+        coordinates = await getCoordsForAddress(address)
+    } catch (error) {
+        return next(error)
+    }
+
 
     // creating a new place:
     const createdPlace = {
@@ -121,6 +158,20 @@ const createPlace = (req, res, next) => {
 };
 
 const updatePlace = (req, res, next) => {
+    // in the middleware functions that are triggered by the routes that 
+    // have validation--calling validationResult will check
+    // if any validation errors are detected
+    const errors = validationResult(req);
+
+    // the validationResult has a method .isEmpty, we'll thow an error
+    if (!errors.isEmpty()) {
+        //the errors object has more data
+        console.log(errors)
+        throw new HttpError("Invalid inputs passed, please check your data.", 422)
+    }
+
+
+
     const { title, description } = req.body;
 
     const placeId = req.params.pid;
@@ -143,6 +194,16 @@ const updatePlace = (req, res, next) => {
 
 const deletePlace = (req, res, next) => {
     const placeId = req.params.pid;
+
+    // checking if a place exists before deleting
+    // if there is a place found, where the id is equal to the placeId we are trying to remove this makes it true
+    // if this is not the case, 
+    if (!DUMMY_PLACES.find(p => p.id === placeId)) {
+        // then we throw an error if there is no id matching
+        throw new HttpError("Could not find a place for that id", 404)
+    }
+
+
     // .filter is a default method available on Javascript arrays, it returns a brand new array filtered per our function
     // here I return p.id not equal placeID which means return true and therefore keep the place if IDs do not match.
     DUMMY_PLACES = DUMMY_PLACES.filter(p => p.id !== placeId)
