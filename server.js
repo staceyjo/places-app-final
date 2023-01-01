@@ -1,12 +1,19 @@
+// import packages/dependencies
 const express = require("express");
+
 // middleware ensures we parse the body of incoming requests
 const bodyParser = require("body-parser");
+
+// import mongoose to use MongoDB database
+const mongoose = require("mongoose");
+
+
 // middleware
 const placesRoutes = require("./routes/places-routes")
 const usersRoutes = require("./routes/users-routes")
 
 //import Http error handler
-const HttpError =require("./models/http-error")
+const HttpError = require("./models/http-error")
 
 
 const app = express();
@@ -39,8 +46,22 @@ app.use((error, req, res, next) => {
     // if we don't have it- we'll fall back to 500 as a default status code
     res.status(error.code || 500)
     // adding a message property, check if there is a message on the error
-    res.json({ message: error.message || "An unknown error occured!"});
+    res.json({ message: error.message || "An unknown error occured!" });
 })
 
-// calling app to listen on port
-app.listen(5000)
+// establish connection with mongoose
+// .connect() returns a promise as the connection to the server, as an asynchronoous task
+// which means we can make use of the then and catch method
+mongoose
+    .connect("mongodb+srv://slyjo:Mongo123@cluster0.uc33kpu.mongodb.net/places?retryWrites=true&w=majority")
+    .then(() => {
+        // calling app to listen on port
+        app.listen(5000)
+        console.log("Connected to MongoDB")
+
+    })
+    .catch(error => {
+        console.log(error)
+    })
+
+
