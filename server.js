@@ -1,3 +1,6 @@
+require('dotenv').config();
+const url = process.env.MONGO_URI;
+
 // import packages/dependencies
 const express = require("express");
 
@@ -7,6 +10,11 @@ const bodyParser = require("body-parser");
 // import mongoose to use MongoDB database
 const mongoose = require("mongoose");
 
+// Global configuration
+const mongoURI = process.env.MONGO_URI;
+const db = mongoose.connection;
+
+const PORT = 5000;
 
 // middleware
 const placesRoutes = require("./routes/places-routes")
@@ -50,18 +58,33 @@ app.use((error, req, res, next) => {
 })
 
 // establish connection with mongoose
+
+// Connect to Mongo
+// mongoose.connect(mongoURI);
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+
 // .connect() returns a promise as the connection to the server, as an asynchronoous task
 // which means we can make use of the then and catch method
-mongoose
-    .connect("mongodb+srv://slyjo:Mongo123@cluster0.uc33kpu.mongodb.net/places?retryWrites=true&w=majority")
-    .then(() => {
-        // calling app to listen on port
-        app.listen(5000)
-        console.log("Connected to MongoDB")
 
-    })
-    .catch(error => {
-        console.log(error)
-    })
+// mongoose
+//     .connect()
+//     .then(() => {
+//         // calling app to listen on port
+//         app.listen(5000)
+//         console.log("Connected to MongoDB")
 
+//     })
+//     .catch(error => {
+//         console.log(error)
+//     })
 
+// Connection Error/Success
+// Define callback functions for various events
+db.on("error", (err) => console.log(err.message + " is mongod not running?"));
+db.on("open", () => console.log("mongo connected: ", mongoURI));
+db.on("close", () => console.log("mongo disconnected"));
+
+app.listen(PORT, function(err){
+    if (err) console.log("Error in server setup")
+    console.log("Server listening on Port", PORT);
+})
