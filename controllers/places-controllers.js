@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require("express-validator");
 
 // using mongoose for session & transaction  
-const  mongoose  = require("mongoose")
+const mongoose = require("mongoose")
 // const { default: mongoose } = require('mongoose');
 
 // import http-error class by requiring it from models folder
@@ -181,6 +181,31 @@ const getPlacesByUserId = async (req, res, next) => {
 
 
 
+// ================================================ READ- by user/creator id- alternative way ================================================
+// ================================================ Not working ================================================
+
+// const getPlacesByUserId = async (req, res, next) => {
+//     const userId = req.params.uid;
+
+//     // let places;
+//     let userWithPlaces
+//     try {
+//         userWithPlaces = await User.findbyId(userId).populate("places")
+//     } catch (error) {
+//         error = new HttpError(
+//             "Fetching places failed, please try again later",
+//             500
+//         )
+//         return next(error)
+//     }
+//     if (!userWithPlaces || userWithPlaces.places.length === 0) {
+//         return next(
+//             new HttpError("Could not find places for the provided user id.", 404)
+//         )
+
+//     }
+//     res.json({ places: userWithPlaces.places.map(place => place.toObject({ getters: true })) })
+// }
 
 
 // ================================================ CREATE ================================================
@@ -448,9 +473,27 @@ const deletePlace = async (req, res, next) => {
     const placeId = req.params.pid;
 
     let place;
-    // finding the place
+    // finding the place by Id in order to delete it
+    // at the same time, we want to search the user collection
+    // and see which user has this place
+    // then we want to make sure that if we delete the place, 
+    // the place ID is deleted from the user document
+    // in order to do this, we need to access to the user document
+    // in order to overwrite/ change existing information
+    // to do this, we use the populate method to refer to 
+    // a document stored in another collection and to work
+    // with data in that existing document of the other collection
+    // To do that, we need a relation between the two documents
+    // the relation was established in user.js with ref Place
+    // and place.js with ref: User
+    // so we just need to let populate know which property
+    // to refer to in the document
+    // in this case, the creator property-- which constains
+    // the user id
+    // Mongoose then takes this and searches through the entire user data
+    // stored in a user document
     try {
-        place = await Place.findById(placeId)
+        place = await Place.findById(placeId).populate("creator")
     } catch (error) {
         error = new HttpError(
             "Something went wrong, could not find to delete place",
@@ -459,9 +502,50 @@ const deletePlace = async (req, res, next) => {
         return next(error);
     }
 
-    // deleting the place and saving it to database
+
+    // checks if a place ID actually exists
+    // if we don't find place by the provided it, we return an erro
+    if (!place) {
+        const error = new HttpError(
+            "Could not find place for this id",
+            404
+        )
+        return next(error)
+    }
+
+
+
+
+    // deleting the place by removing it and pulling it from the database
+    // so we'll need a session to start the transaction
+
     try {
-        await place.remove()
+        // await place.remove()
+
+        //set the constant for the current session
+        const sess = await mongoose.startSession();
+
+        // with the session we can start the transaction
+        sess.startTransaction()
+
+        // first we need to remove place from the collection
+        // to do that we check if the place exists
+        // by adding the session property and referring to the current session
+        await place.remove({ session: sess })
+
+        // now we access the place stored in the creator (place id)
+        // and then we pull the place
+        // pull will automatically remove the id
+        place.creator.places.pull(place)
+
+        // now we can save the user by referring to the current session
+        await place.creator.save({ session: sess })
+
+        // if all was successful, we can commit the transaction
+        await sess.commitTransaction()
+
+
+
     } catch (error) {
         error = new HttpError(
             "Something went wrong, could not delete place",
