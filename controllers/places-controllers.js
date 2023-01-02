@@ -273,7 +273,11 @@ const updatePlace = async (req, res, next) => {
     if (!errors.isEmpty()) {
         //the errors object has more data
         console.log(errors)
-        throw new HttpError("Invalid inputs passed, please check your data.", 422)
+        return next(new HttpError(
+            "Invalid inputs passed, please check your data.", 
+            422
+            )
+        )
     }
 
 

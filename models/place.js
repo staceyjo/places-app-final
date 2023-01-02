@@ -26,16 +26,21 @@ const placeSchema = new Schema({
     image: { type: String, required: true },
     address: { type: String, required: true },
     location: {
-        lat: { type: Number, required: true},
-        lng: { type: Number, required: true},
+        lat: { type: Number, required: true },
+        lng: { type: Number, required: true },
     },
-    creator: { type: String, required: true },
+    // creator: { type: String, required: true }, // for testing
+    
+    // for creator- we want MongoDB to create the id
+    // the ref property allows us to establish the connection 
+    // between the current place schema and another schema(user)
+    creator: { type: mongoose.Types.ObjectId, required: true, ref: "User" }
 
 });
 
 // now that we have the Schema, we need to create the model
 // then once we have the model, we can instantiate the model
-// which will createt a document
+// which will create a document
 
 // to create the model, we simply use module exports
 // and set it equal to mongoose and use the .model() method
