@@ -111,7 +111,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 // Connection Error/Success
 // Define callback functions for various events
 db.on("error", (err) => console.log(err.message + " is mongod not running?"));
-db.on("open", () => console.log("mongo connected: ", mongoURI));
+db.on("open", () => console.log("mongo connected: to mongoURI"));
 db.on("close", () => console.log("mongo disconnected"));
 
 app.listen(PORT, function (err) {
