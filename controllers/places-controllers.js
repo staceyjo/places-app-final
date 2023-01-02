@@ -5,6 +5,10 @@ const { v4: uuidv4 } = require('uuid');
 // using validator to prevent user from entering place with missing info
 const { validationResult } = require("express-validator");
 
+// using mongoose for session & transaction  
+const  mongoose  = require("mongoose")
+// const { default: mongoose } = require('mongoose');
+
 // import http-error class by requiring it from models folder
 const HttpError = require("../models/http-error");
 
@@ -13,6 +17,10 @@ const getCoordsForAddress = require("../utilities/location");
 
 // import place model
 const Place = require("../models/place");
+
+// import user model to create a new place and to add it to user
+const User = require("../models/user");
+
 
 
 // will be replaced with database access
@@ -230,6 +238,12 @@ const createPlace = async (req, res, next) => {
     // instantiate new place with Place constructor
     // which will create a new js object that we can use to add data to our model
     // what the model needs is predetermined by that properties in our schema
+
+    // Note: changing the data type of the creator field from string since we 
+    // established a connection between places and users,
+    // it will now be a special type which MongoDB uses to manage IDs
+    // since now we store a real MongoDB ID in this field now instead of the
+    // dummy string we were using before
     const createdPlace = new Place({
         title,
         description,
@@ -239,12 +253,87 @@ const createPlace = async (req, res, next) => {
         creator
     });
 
+    // instead of immediately saving this place, we need to check
+    // whether the user ID we provided exists already, if it does
+    // we should be able to create a new place
+
+    // first we need to find the user by id, by using the creator id
+    // and check whethere the creator id of the logged in user is stored
+    let user;
+    try {
+        user = await User.findById(creator)
+
+    } catch (error) {
+        error = new HttpError(
+            "Creating place failed, please try again"
+        )
+        return next(error)
+    }
+
+
+    // if the check is succesful, we can check the ID of the creator
+    // if the user is not existing, the user is not in the database
+    if (!user) {
+        error = new HttpError(
+            "Could not find user for provided id",
+            404
+        )
+        return next(error)
+    }
+    console.log(user)
+
+
     try {
         // .save() is a method in mongoose and will handle all the 
         // Mongodb code to store a new document in the database collection
         // .save will also create the unique places id
         // .save is also a promise, so we can have an async task
-        await createdPlace.save()
+
+        // await createdPlace.save()
+
+        // now instead of just saving, we can store/create
+        // the new document with the new place and 
+        // add the new place ID to the corresponding user
+        // so were doing two things, by executing multiple/different
+        // operations which are not directly related to eachother
+        // and we only want to continue if both succeed
+        // if one of them fails ( so creating the place fails OR
+        // if storing the ID of the place in our user document fails
+        // then we undo all operations) and not change anything in documents
+        // if both succeed, then we want to change the document
+        // to do this, we need to use transactions and settings
+        // transactions allows you to perform multiple operations in isolation
+        // of one another
+        // transactions are built on sessions
+        // so first we start a session to work with transactions
+        // once the transaction is succesful, then the session is finished
+        // and then the transaction is committed 
+
+        // current session when we want to establish new place by setting
+        // a constant and use the .startSession() method built in mongoose
+
+        const sess = await mongoose.startSession()
+
+        // now we can start the transaction
+        sess.startTransaction()
+
+        // tell mongoose what you want it to do
+        // save in the database by providing session property
+        // and refer to our current session 
+        await createdPlace.save({ session: sess })
+
+        // now the place is stored, and with the place being created
+        //  we can make sure the new place ID is added to the user
+        // by using .push() method to add to the previously creeated places
+        user.places.push(createdPlace)
+
+        // now we have to save the newly updated user, as part of the current session
+        await user.save({ session: sess })
+
+        // only when all these tasks are succesful, the session
+        // can now commit the transaction
+        await sess.commitTransaction()
+
 
     } catch (error) {
         error = new HttpError(
@@ -274,9 +363,9 @@ const updatePlace = async (req, res, next) => {
         //the errors object has more data
         console.log(errors)
         return next(new HttpError(
-            "Invalid inputs passed, please check your data.", 
+            "Invalid inputs passed, please check your data.",
             422
-            )
+        )
         )
     }
 
