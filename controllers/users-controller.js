@@ -265,7 +265,9 @@ const login = async (req, res, next) => {
     }
 
     // if we make it past this point, we found an actual user
-    res.json({ message: "Logged in!" })
+    res.json({ 
+        message: "Logged in!", 
+        user: existingUser.toObject({getters: true}) })
 
 };
 
