@@ -24,33 +24,33 @@ const User = require("../models/user");
 
 
 // will be replaced with database access
-let DUMMY_PLACES = [
-    {
-        id: 'p1',
-        title: 'Stone Mountain',
-        description: '16 miles east of Atlanta, a quartz monzonite dome monadnock surrounded by 3200 acres of natural beauty!',
-        imageUrl:
-            'https://img1.10bestmedia.com/Images/Photos/6617/p-StoneMountain_55_660x440_201404181445.jpg',
-        address: '1000 Robert E Lee Blvd, Stone Mountain, GA 30083',
-        location: {
-            lat: 33.8053189,
-            lng: -84.1455315
-        },
-        creator: 'u1'
-    },
-    {
-        id: 'p2',
-        title: 'Empire State Building',
-        description: 'One of the most famous sky scrapers in the world!',
-        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
-        address: '20 W 34th St, New York, NY 10001',
-        location: {
-            lat: 40.7484405,
-            lng: -73.9878584
-        },
-        creator: 'u2'
-    }
-];
+// let DUMMY_PLACES = [
+//     {
+//         id: 'p1',
+//         title: 'Stone Mountain',
+//         description: '16 miles east of Atlanta, a quartz monzonite dome monadnock surrounded by 3200 acres of natural beauty!',
+//         imageUrl:
+//             'https://img1.10bestmedia.com/Images/Photos/6617/p-StoneMountain_55_660x440_201404181445.jpg',
+//         address: '1000 Robert E Lee Blvd, Stone Mountain, GA 30083',
+//         location: {
+//             lat: 33.8053189,
+//             lng: -84.1455315
+//         },
+//         creator: 'u1'
+//     },
+//     {
+//         id: 'p2',
+//         title: 'Empire State Building',
+//         description: 'One of the most famous sky scrapers in the world!',
+//         imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
+//         address: '20 W 34th St, New York, NY 10001',
+//         location: {
+//             lat: 40.7484405,
+//             lng: -73.9878584
+//         },
+//         creator: 'u2'
+//     }
+// ];
 
 
 
@@ -124,7 +124,7 @@ const getPlaceById = async (req, res, next) => {
     // method. To get rid of the underscore, we can use {getters} 
     // and set it to true 
     // Mongoose adds an id getter to every document which returns the id as a string
-    res.json({ place: place.toObject({ getters: true }) })
+    res.json({ place: place.toObject({ getters: true }) });
 }
 
 
@@ -141,12 +141,12 @@ const getPlacesByUserId = async (req, res, next) => {
     //     return p.creator === userId;
     // });
 
-    let places;
+    let userWithPlaces;
     try {
         // using find by itself would find all places
         // so we need to find a specific place by user id by using creator property
         // and specify the userId we defined in the constant
-        places = await Place.find({ creator: userId })
+        userWithPlaces = await User.findById(userId).populate('places');
     } catch (error) {
         error = new HttpError(
             "Fetching places failed, please try again later",
@@ -156,7 +156,8 @@ const getPlacesByUserId = async (req, res, next) => {
     }
 
     // error handling if we don't have places or 
-    if (!places || places.length === 0) {
+    // if (!places || places.length === 0) {
+    if (!userWithPlaces || userWithPlaces.places.length === 0) {
 
         // create an error to test to trigger error handling middleware
         // using error model:
@@ -170,13 +171,14 @@ const getPlacesByUserId = async (req, res, next) => {
         // return next(error);
     }
 
+
     // res.json({ places }) // for testing
     // we need to add a method to places, but we cannot use .toObject
     // because find returns contains an array, so we use 
     // have to use .map() method
     // then we apply getters feature to make sure the underscore 
     // from the id property is removed
-    res.json({ places: places.map(place => place.toObject({ getters: true })) })
+    res.json({ places: userWithPlaces.places.map(place => place.toObject({ getters: true })) })
 }
 
 
@@ -222,7 +224,7 @@ const createPlace = async (req, res, next) => {
     // the validationResult has a method .isEmpty, we'll thow an error
     if (!errors.isEmpty()) {
         //the errors object has more data
-        console.log(errors)
+        // console.log(errors)
         return next(
             new HttpError("Invalid inputs passed, please check your data.", 422)
         )
@@ -290,7 +292,8 @@ const createPlace = async (req, res, next) => {
 
     } catch (error) {
         error = new HttpError(
-            "Creating place failed, please try again"
+            "Creating place failed, please try again",
+            500
         )
         return next(error)
     }
@@ -299,7 +302,7 @@ const createPlace = async (req, res, next) => {
     // if the check is succesful, we can check the ID of the creator
     // if the user is not existing, the user is not in the database
     if (!user) {
-        error = new HttpError(
+        const error = new HttpError(
             "Could not find user for provided id",
             404
         )
@@ -386,11 +389,12 @@ const updatePlace = async (req, res, next) => {
     // the validationResult has a method .isEmpty, we'll thow an error
     if (!errors.isEmpty()) {
         //the errors object has more data
-        console.log(errors)
-        return next(new HttpError(
-            "Invalid inputs passed, please check your data.",
-            422
-        )
+        // console.log(errors)
+        return next(
+            new HttpError(
+                "Invalid inputs passed, please check your data.",
+                422
+            )
         )
     }
 
