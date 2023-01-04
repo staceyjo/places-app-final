@@ -115,6 +115,16 @@ const getUsers = async (req, res, next) => {
 // };
 
 // ==================================== SIGNUP- FINAL ====================================
+// on the front end- the image is logging and posting to the backend uploads/images file
+// but on sign/up the image isn't changing in the front end- still pulling
+// the link to the old string
+// but i can see the images in the uploads/images folder- so something is happening
+// need to do something with the file:
+// 1- link the file to the database by creating an image url
+// 2- roll back the creation of the file we get a validation error for
+// right now the images are still posted even if the ueser has already signed up and gets the
+// user already exists error
+
 const signup = async (req, res, next) => {
     // in the middleware functions that are triggered by the routes that 
     // have validation--calling validationResult will check
@@ -123,6 +133,13 @@ const signup = async (req, res, next) => {
 
     // the validationResult has a method .isEmpty, we'll thow an error
     if (!errors.isEmpty()) {
+
+
+        //so if we get a validation error- we don't want to continue
+        // instead we want to delete the file
+        // and i want to do this anywhere i trigger an error in sign-up
+        // general error handling happens in server.js ....
+
         //the errors object has more data
         // console.log(errors)
         return next(

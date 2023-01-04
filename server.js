@@ -1,4 +1,10 @@
 require('dotenv').config();
+
+// fs allows us to interact with files in the file system
+// import fs module to delete image  from disk storage if there's an error
+
+const fs = require("fs")
+
 const url = process.env.MONGO_URI;
 
 // import packages/dependencies
@@ -71,8 +77,39 @@ app.use((req, res, next) => {
 })
 
 // middleware using default error handler,
+
 // this function will only be executed on requests that have an error attached to it
 app.use((error, req, res, next) => {
+    
+    // can check if there is a file and if there is we roll back because there is an error
+    // multer adds as a NEW property to the request object the file property
+    // so we can check if the file is set
+    if(req.file) {
+
+        // and if it is set we know there is a file as part of the request
+        // so the request where something failed made the file
+        // this is the file we want to delete on the disk storage
+        // to delete we have to import a core node module, fs or file system
+        // .unlink is kind of like delete- it will unlink the file from
+        // disk storage so it won't be added(which is like deleting it)
+        // to find the file we want to delete, we use request file path
+        // path is a property that exists on the file object that multer adds on the request
+        // with using unlink, have to provide a callback function which 
+        // will be triggered when the deletion is done
+        // if something goes wrong, we call an error
+        // we can just log the error- if the file deletion happens
+        // we can can always manually delete it from the uploads/images folder
+        // but it doesn't really matter
+
+        fs.unlink(req.file.path, (error) => {
+            console.log(error)
+        })
+
+
+    }
+
+
+
     // check if a response has already been sent
     if (res.headerSent) {
         // return next and forward the error
