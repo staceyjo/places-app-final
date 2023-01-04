@@ -5,7 +5,8 @@ require('dotenv').config();
 
 const fs = require("fs")
 
-const url = process.env.MONGO_URI;
+// Node.js path module required for express static middleware
+const path = require("path")
 
 // import packages/dependencies
 const express = require("express");
@@ -17,6 +18,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 // Global configuration
+// const url = process.env.MONGO_URI;
 const mongoURI = process.env.MONGO_URI;
 const db = mongoose.connection;
 
@@ -34,7 +36,38 @@ const app = express();
 
 
 // register middleware- middlewares read top to bottom, so first parse the body then reach the routes
+// middleware the parse the JSON data of the app
 app.use(bodyParser.json())
+
+
+// despite having the correct url, getting an GET error & the image still won't show up
+// this is because with the way Node.js/Express works
+// by default, none of the files on the server side
+// are accessible from outside the server
+// which prevents outsiders from looking into the source code
+// if they just typed in something like:                            
+// http://localhost:5000/uploads/images/4335bd0d-fe19-42a5-b3d1-4cdfa7bf8ca2.jpeg 
+// everything incoming request has to journey through the middleware
+// only the logic in the middlewares executes the requests
+// right now, we don't have a middleware to process a random image link request
+// to grant access to images, we need a new middleware to filter
+// from the /uploads/images
+// special requests are handled by a speci middleware built into express
+// express static
+// you can execute express static as a method and it will return a middleware
+// its a middleware that just returns the requested file
+// static serving just means it returns a file
+// to control which files and which folder we want to return
+// so we point to the folder with a path
+// use node path module, and join two segments- uploads and image
+// this will build a new path pointing at the uploads images folder
+// so now any file in there, when we request it should be returned
+
+app.use("/uploads/images", express.static(path.join("uploads", "images")) )
+
+
+
+
 
 // middleware for cors error to add headers to the response
 // so when a response is sent back from more specific routes,

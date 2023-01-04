@@ -119,8 +119,8 @@ const getUsers = async (req, res, next) => {
 // but on sign/up the image isn't changing in the front end- still pulling
 // the link to the old string
 // but i can see the images in the uploads/images folder- so something is happening
-// need to do something with the file:
-// 1- link the file to the database by creating an image url
+// need to do two things with the file:
+// 1- link the file to the database by creating an image url- this will be profile photo
 // 2- roll back the creation of the file we get a validation error for
 // right now the images are still posted even if the ueser has already signed up and gets the
 // user already exists error
@@ -135,13 +135,13 @@ const signup = async (req, res, next) => {
     if (!errors.isEmpty()) {
 
 
-        //so if we get a validation error- we don't want to continue
+        // so if we get a validation error- we don't want to continue
         // instead we want to delete the file
         // and i want to do this anywhere i trigger an error in sign-up
         // general error handling happens in server.js ....
 
-        //the errors object has more data
         // console.log(errors)
+
         return next(
             new HttpError(
                 "Invalid inputs passed, please check your data.",
@@ -152,6 +152,7 @@ const signup = async (req, res, next) => {
 
 
     // create a new user by extracting data(name, email, password) from incoming request body
+
     const { name, email, password } = req.body;
 
 
@@ -187,10 +188,17 @@ const signup = async (req, res, next) => {
 
     // create the new user
     // will encrypt pw later in authentication
+    // for the image, multer gives us the body property on the request
+    // with all the text fields it found on the incoming request body
+    // so we can use that we can add it to the user on signup
+    // the path should be: uploads/images
+
     const createdUser = new User({
         name,
         email,
-        image: "https://images.pexels.com/photos/4171757/pexels-photo-4171757.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", 
+        // image: "https://images.pexels.com/photos/4171757/pexels-photo-4171757.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", // original for testing
+        image: req.file.path, // testing for MongoDB - adds full link in front end on users item component
+        // image: "http://localhost:5000/" + req.file.path, // should also work
         password,
         places: []
     })
