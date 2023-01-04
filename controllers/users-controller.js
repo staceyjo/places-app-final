@@ -1,6 +1,6 @@
 // used npm i -- save uuid package to create unique user ids
 // import { v4 as uuidv4 } from 'uuid';
-const { v4: uuidv4 } = require('uuid');
+// const { v4: uuidv4 } = require('uuid');
 
 
 // using validator to prevent user from entering place with missing info
@@ -15,15 +15,15 @@ const User = require("../models/user")
 
 
 // for postman testing
-const DUMMY_USERS = [
-    {
-        id: "u1",
-        name: "Stacey Joseph",
-        email: "test@test.com",
-        password: "testers"
-    }
+// const DUMMY_USERS = [
+//     {
+//         id: "u1",
+//         name: "Stacey Joseph",
+//         email: "test@test.com",
+//         password: "testers"
+//     }
 
-];
+// ];
 
 
 
@@ -124,11 +124,12 @@ const signup = async (req, res, next) => {
     // the validationResult has a method .isEmpty, we'll thow an error
     if (!errors.isEmpty()) {
         //the errors object has more data
-        console.log(errors)
-        return next(new HttpError(
-            "Invalid inputs passed, please check your data.",
-            422
-        )
+        // console.log(errors)
+        return next(
+            new HttpError(
+                "Invalid inputs passed, please check your data.",
+                422
+            )
         )
     }
 
@@ -146,6 +147,7 @@ const signup = async (req, res, next) => {
     // this will be asynchronous task so we wrap the entire thing in a try catch
 
     let existingUser;
+
     try {
         existingUser = await User.findOne({ email: email })
     } catch (error) {
@@ -171,7 +173,7 @@ const signup = async (req, res, next) => {
     const createdUser = new User({
         name,
         email,
-        image,
+        image: "https://images.pexels.com/photos/4171757/pexels-photo-4171757.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", 
         password,
         places: []
     })
@@ -265,9 +267,10 @@ const login = async (req, res, next) => {
     }
 
     // if we make it past this point, we found an actual user
-    res.json({ 
-        message: "Logged in!", 
-        user: existingUser.toObject({getters: true}) })
+    res.json({
+        message: "Logged in!",
+        user: existingUser.toObject({ getters: true })
+    })
 
 };
 

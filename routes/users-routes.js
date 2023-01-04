@@ -18,11 +18,21 @@ const fileUpload = require("../middleware/file-upload")
 const router = express.Router();
 
 
-// routes
+
+
+
+//============================HOME/ ALL USERS============================
+
 router.get("/", usersControllers.getUsers);
 
 
+
+//============================SIGN UP============================
 // using express validator to check name of user to ensure it is not empty
+// also using the image upload multer middleware we set up in the backend
+// but we need to be sure we send the right type of data back to the backend so it works
+// and include a file in the http request
+
 router.post(
     "/signup",
     // multer middleware being called with .single
@@ -50,6 +60,8 @@ router.post(
     usersControllers.signup)
 
 
+
+//============================LOGIIN============================
 router.post("/login", usersControllers.login)
 
 

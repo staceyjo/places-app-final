@@ -78,7 +78,7 @@ const fileUpload = multer({
             // then we add .
             // and then finally the extension
             // this is all handled internally by multer to use the filename
-            cb(null, { v4: uuidv4 }() + '.' + ext);
+            cb(null, uuidv4() + '.' + ext);
         }
 
     }),
