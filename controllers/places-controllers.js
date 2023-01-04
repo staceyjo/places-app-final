@@ -1,3 +1,9 @@
+// fs allows us to interact with files in the file system
+// import fs module to delete image  from disk storage if there's an error or if we delete a place
+
+const fs = require("fs")
+
+
 // used npm i -- save uuid package to create unique user ids for testing
 // import { v4 as uuidv4 } from 'uuid';
 const { v4: uuidv4 } = require('uuid');
@@ -535,6 +541,11 @@ const deletePlace = async (req, res, next) => {
     }
 
 
+    // deleting image file once image is deleted by accessing the image key in the place.js document
+    const imagePath = place.image
+
+
+
 
 
     // deleting the place by removing it and pulling it from the database
@@ -574,6 +585,19 @@ const deletePlace = async (req, res, next) => {
         )
         return next(error);
     }
+
+
+    // after all the database cleanup above, want to actually delete the place
+    // we can use the fs module for that, which allows us to use unlink
+    // .unlink is kind of like delete- it will unlink the file from
+    // disk storage so it won't be added(which is like deleting it)
+    // and then use the image path as the first argument
+    // the seocond argument is the callback function, which could hold an error
+    fs.unlink(imagePath, error => {
+
+        console.log(error)
+    })
+
 
     res.status(200).json({ message: "Deleted place" })
 }
