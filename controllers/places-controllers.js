@@ -1,4 +1,4 @@
-// used npm i -- save uuid package to create unique user ids
+// used npm i -- save uuid package to create unique user ids for testing
 // import { v4 as uuidv4 } from 'uuid';
 const { v4: uuidv4 } = require('uuid');
 
@@ -106,6 +106,10 @@ const getPlaceById = async (req, res, next) => {
 
     // }
 
+
+
+
+
     // error handling:
     if (!place) {
         //
@@ -178,7 +182,11 @@ const getPlacesByUserId = async (req, res, next) => {
     // have to use .map() method
     // then we apply getters feature to make sure the underscore 
     // from the id property is removed
-    res.json({ places: userWithPlaces.places.map(place => place.toObject({ getters: true })) })
+    res.json({ 
+        places: userWithPlaces.places.map(place => 
+            place.toObject({ getters: true })
+            ) 
+        })
 }
 
 
@@ -216,7 +224,7 @@ const getPlacesByUserId = async (req, res, next) => {
 // so we can use await and work with promises
 // will replace throw with next
 const createPlace = async (req, res, next) => {
-    // in the middleware functions that are triggered by the routes that 
+    // in the middleware functions are triggered by the routes that 
     // have validation--calling validationResult will check
     // if any validation errors are detected
     const errors = validationResult(req);
@@ -224,7 +232,8 @@ const createPlace = async (req, res, next) => {
     // the validationResult has a method .isEmpty, we'll thow an error
     if (!errors.isEmpty()) {
         //the errors object has more data
-        // console.log(errors)
+        console.log(errors)
+
         return next(
             new HttpError("Invalid inputs passed, please check your data.", 422)
         )
@@ -271,12 +280,20 @@ const createPlace = async (req, res, next) => {
     // it will now be a special type which MongoDB uses to manage IDs
     // since now we store a real MongoDB ID in this field now instead of the
     // dummy string we were using before
+    // for the place image- we can finally remove the dummy string from testing
+    // want to link the image to a new place
+    // for the image, multer gives us the body property on the request
+    // with all the text fields it found on the incoming request body
+    // so we can use that we can add it to the user on signup
+    // the path should be: uploads/images
+
     const createdPlace = new Place({
         title,
         description,
-        image: "https://img1.10bestmedia.com/Images/Photos/6617/p-StoneMountain_55_660x440_201404181445.jpg",
         address,
         location: coordinates,
+        // image: "https://img1.10bestmedia.com/Images/Photos/6617/p-StoneMountain_55_660x440_201404181445.jpg",
+        image: req.file.path,
         creator
     });
 
