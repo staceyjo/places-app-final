@@ -75,5 +75,6 @@ router.patch(
 
 router.delete("/:pid", placesControllers.deletePlace)
 
+
 // export syntax in node.js
 module.exports = router;
