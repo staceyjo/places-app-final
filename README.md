@@ -68,10 +68,6 @@ Used 'npm run build' to create the build folder for production.
 
 
 
-## Deployment: Netlify: 
-
-[https://stellular-naiad-9453a0.netlify.app/](https://stellular-naiad-9453a0.netlify.app/)
-
 
 
 ## Deployment: Render:
