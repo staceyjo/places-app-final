@@ -2,6 +2,8 @@
 
 MERN stands for MongoDB, Express.js, React.js and Node.js - and combined, these four technologies helped me to build an application that allows users to share places (with images & location) with other users. Multiple data models, image upload, input validation and dummy authentication.
 
+![My Remote Image](https://i.ibb.co/c8nmPHt/Screen-Shot-2023-01-05-at-7-51-36-AM.png)
+
 ### MongoDB: 
 
 The Places collection for the database is stored using MongoDB version 5.0.14. The database utilizes the shared tier cluster. 
@@ -42,7 +44,7 @@ All CRUD (Create, Read, Update, Delete) methods covered
 
 
 
-![My Remote Image](https://i.ibb.co/c8nmPHt/Screen-Shot-2023-01-05-at-7-51-36-AM.png)
+
 
 
 
@@ -124,6 +126,8 @@ The images used for the app profile pictures were found on pexel:
 Learned how to properly ask a question on Stack Overflow and earned some privledges and badges. See my question here: 
 [https://stackoverflow.com/questions/74988661/typeerror-cannot-read-properties-of-undefined-reading-length](https://stackoverflow.com/questions/74988661/typeerror-cannot-read-properties-of-undefined-reading-length)
 
+![My Remote Image](https://i.ibb.co/3SMLxdC/Screen-Shot-2023-01-02-at-11-06-43-PM.png)
+
 
 
 ### Errors
@@ -145,3 +149,6 @@ This project was built after completing a 19 hour Udemy course: React, NodeJS, E
 ### What I want to work on
 - Deleting users
 - Adding real authentication
+
+
+
