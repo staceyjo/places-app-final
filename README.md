@@ -1,6 +1,6 @@
 # PLACES- The Full Stack MERN App
 
-MERN stands for MongoDB, Express.js, React.js and Node.js - and combined, these four technologies helped me to build an application that allows users to share places (with images & location) with other users. Multiple data models, image upload, input validation and dummy authentication.
+MERN stands for MongoDB, Express.js, React.js and Node.js - and combined, these four technologies helped me to build an application that allows users to share places (with images & location) with other users. 
 
 ![My Remote Image](https://i.ibb.co/c8nmPHt/Screen-Shot-2023-01-05-at-7-51-36-AM.png)
 
@@ -144,6 +144,7 @@ This project was built after completing a 19 hour Udemy course: React, NodeJS, E
 
 ### What I want to work on
 - Deleting users
+- Closing out a place and going back to all users
 - Adding real authentication
 
 
