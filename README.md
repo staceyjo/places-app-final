@@ -139,10 +139,14 @@ The web app manifest provides information about an application (such as name, au
 ![My Remote Image](https://i.ibb.co/J7kqc9G/Screen-Shot-2023-01-05-at-5-58-47-AM.png)
 
 
+# Trello
+
+![My Remote Image](https://i.ibb.co/wy0DDDQ/Screen-Shot-2023-01-05-at-1-15-46-PM.png)
+
 
 ### What I want to work on
 - Deleting users
-- Closing out a place and going back to all users
+- Closing out a modals and going back to all users
 - Adding real authentication
 
 
