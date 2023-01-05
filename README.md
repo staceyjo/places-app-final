@@ -137,10 +137,6 @@ The web app manifest provides information about an application (such as name, au
 ![My Remote Image](https://i.ibb.co/J7kqc9G/Screen-Shot-2023-01-05-at-5-58-47-AM.png)
 
 
-### Udemy
-This project was built after completing a 19 hour Udemy course: React, NodeJS, Express & MongoDB - The MERN Fullstack Guide. The course has 208 lectures. This course is taught by two ACADEMIND instructors - Max (React.js, Node/ Express) and Manuel (MongoDB) who have years of experience of working with these technologies and teaching them to other people.
-
-[https://discord.gg/zWGwBQqu](https://discord.gg/zWGwBQqu)
 
 ### What I want to work on
 - Deleting users
