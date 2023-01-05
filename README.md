@@ -21,7 +21,7 @@ The backend was created using Node.Js
 - models: user, place
 - controllers: places, user
 - routes: places, user
-- componenets: places, user and shared
+- components: places, user and shared
 - multer middleware for file upload
 - unique user identification uuid package
 - express validator to check user entries
@@ -106,7 +106,7 @@ Node.js middleware for handling `multipart/form-data`, which is primarily used f
 ### Postman
 
 Learned how to use Postman. Postman also enables you to automate API testing, monitor API performance, mock APIs and more. It was helpful to test all the routes to make sure they worked before moving into the backend. 
-Link to my workspace: [16712219-4a0e-4826-8d8e-7a17f7e0faa4]
+Link to my workspace: [16712219-4a0e-4826-8d8e-7a17f7e0faa4](16712219-4a0e-4826-8d8e-7a17f7e0faa4)
 
 ![My Remote Image](https://i.ibb.co/42xHrxQ/Screen-Shot-2023-01-05-at-6-27-26-AM.png)
 
@@ -118,10 +118,6 @@ The images used for the app profile pictures were found on pexel:
 [https://www.pexels.com/collections/headshots-kxyislb/](https://www.pexels.com/collections/headshots-kxyislb/)
 
 
-### Udemy
-This project was built after completing a 19 hour Udemy course: React, NodeJS, Express & MongoDB - The MERN Fullstack Guide. The course has 208 lectures. This course is taught by two ACADEMIND instructors - Max (React.js, Node/ Express) and Manuel (MongoDB) who have years of experience of working with these technologies and teaching them to other people.
-
-[https://discord.gg/zWGwBQqu](https://discord.gg/zWGwBQqu)
 
 
 ### Stack Overflow
@@ -139,3 +135,13 @@ The web app manifest provides information about an application (such as name, au
 ![My Remote Image](https://i.ibb.co/FHq60S2/Screen-Shot-2023-01-05-at-5-57-10-AM.png)
 
 ![My Remote Image](https://i.ibb.co/J7kqc9G/Screen-Shot-2023-01-05-at-5-58-47-AM.png)
+
+
+### Udemy
+This project was built after completing a 19 hour Udemy course: React, NodeJS, Express & MongoDB - The MERN Fullstack Guide. The course has 208 lectures. This course is taught by two ACADEMIND instructors - Max (React.js, Node/ Express) and Manuel (MongoDB) who have years of experience of working with these technologies and teaching them to other people.
+
+[https://discord.gg/zWGwBQqu](https://discord.gg/zWGwBQqu)
+
+### What I want to work on
+- Deleting users
+- Adding real authentication
