@@ -7,13 +7,33 @@ MERN stands for MongoDB, Express.js, React.js and Node.js - and combined, these 
 The Places collection for the database is stored using MongoDB version 5.0.14. The database utilizes the shared tier cluster. 
 
 ### Express.js: 
+This project uses express
 
 ### React: 
 This project was bootstrapped with npx create-react-app. In the project directory, you can run: `npm start` [React documentation](https://reactjs.org/)
 
 ### Node.js:
+The backend was created using Node.Js
 
-## CRUD
+## Project features:
+- sign up/login functionality(not real authentication)
+- third party APIs
+- models: user, place
+- controllers: places, user
+- routes: places, user
+- componenets: places, user and shared
+- multer middleware for file upload
+- unique user identification uuid package
+- express validator to check user entries
+- express static middleware to get paths from Node.js
+- react router dom
+- React hooks
+- File Reader Javascript browser api
+- fs module to interact with files in the file system
+- body parser for incoming JSON requests
+- CSS styling
+
+### CRUD
 CRUD refers to the four basic operations a software application should be able to perform – Create, Read, Update, and Delete. CRUD apps consist of 3 parts: an API (or server), a database, and a user interface (UI). The API contains the code and methods, the database stores and helps the user retrieve the information, while the user interface helps users interact with the app. 
 
 All CRUD (Create, Read, Update, Delete) methods covered
@@ -119,6 +139,3 @@ The web app manifest provides information about an application (such as name, au
 ![My Remote Image](https://i.ibb.co/FHq60S2/Screen-Shot-2023-01-05-at-5-57-10-AM.png)
 
 ![My Remote Image](https://i.ibb.co/J7kqc9G/Screen-Shot-2023-01-05-at-5-58-47-AM.png)
-
-
-
