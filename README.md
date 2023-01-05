@@ -7,15 +7,19 @@ MERN stands for MongoDB, Express.js, React.js and Node.js - and combined, these 
 ### MongoDB: 
 
 The Places collection for the database is stored using MongoDB version 5.0.14. The database utilizes the shared tier cluster. 
+[MongoDB documentation](https://docs.mongodb.com/)
 
 ### Express.js: 
 This project uses express
+[Express documentation](https://reactjs.org/docs/getting-started.html)
 
 ### React: 
-This project was bootstrapped with npx create-react-app. In the project directory, you can run: `npm start` [React documentation](https://reactjs.org/)
+This project was bootstrapped with npx create-react-app. In the project directory, you can run: `npm start` 
+[React documentation](https://reactjs.org/docs/getting-started.html)
 
 ### Node.js:
 The backend was created using Node.Js
+[Node documentation](https://nodejs.org/en/docs/)
 
 ## Project features:
 - sign up/login functionality(not real authentication)
@@ -65,8 +69,6 @@ All CRUD (Create, Read, Update, Delete) methods covered
 
 ### Production
 Used 'npm run build' to create the build folder for production. 
-
-
 
 
 
